@@ -14,6 +14,90 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip_address: string | null
+          new_values: Json | null
+          old_values: Json | null
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip_address?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip_address?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
+      exchange_products: {
+        Row: {
+          created_at: string
+          exchange_id: string
+          id: string
+          product_id: string
+          quantity: number
+        }
+        Insert: {
+          created_at?: string
+          exchange_id: string
+          id?: string
+          product_id: string
+          quantity: number
+        }
+        Update: {
+          created_at?: string
+          exchange_id?: string
+          id?: string
+          product_id?: string
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exchange_products_exchange_id_fkey"
+            columns: ["exchange_id"]
+            isOneToOne: false
+            referencedRelation: "exchanges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exchange_products_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exchanges: {
         Row: {
           approved_at: string | null
@@ -59,6 +143,42 @@ export type Database = {
         }
         Relationships: []
       }
+      products: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          name: string
+          quantity: number
+          unit: Database["public"]["Enums"]["product_unit"]
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          quantity?: number
+          unit?: Database["public"]["Enums"]["product_unit"]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          quantity?: number
+          unit?: Database["public"]["Enums"]["product_unit"]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -80,6 +200,39 @@ export type Database = {
           full_name?: string | null
           id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      user_presence: {
+        Row: {
+          device_info: Json | null
+          is_online: boolean
+          last_seen: string
+          latitude: number | null
+          location_updated_at: string | null
+          longitude: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          device_info?: Json | null
+          is_online?: boolean
+          last_seen?: string
+          latitude?: number | null
+          location_updated_at?: string | null
+          longitude?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          device_info?: Json | null
+          is_online?: boolean
+          last_seen?: string
+          latitude?: number | null
+          location_updated_at?: string | null
+          longitude?: number | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -116,10 +269,21 @@ export type Database = {
         }
         Returns: boolean
       }
+      log_audit: {
+        Args: {
+          p_action: string
+          p_entity_id: string
+          p_entity_type: string
+          p_new_values?: Json
+          p_old_values?: Json
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "user"
       exchange_status: "pending" | "approved" | "rejected"
+      product_unit: "kg" | "un" | "l" | "cx" | "pc"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -249,6 +413,7 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "user"],
       exchange_status: ["pending", "approved", "rejected"],
+      product_unit: ["kg", "un", "l", "cx", "pc"],
     },
   },
 } as const

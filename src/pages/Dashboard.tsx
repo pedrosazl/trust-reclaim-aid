@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { ExchangeList } from "@/components/dashboard/ExchangeList";
-import { LogOut, Plus, Shield, User } from "lucide-react";
+import { OnlineUsers } from "@/components/dashboard/OnlineUsers";
+import { LogOut, Plus, Shield, User, Package, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const Dashboard = () => {
@@ -55,6 +56,16 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="flex gap-2">
+              <Button onClick={() => navigate("/produtos")}>
+                <Package className="mr-2 h-4 w-4" />
+                Produtos
+              </Button>
+              {isAdmin && (
+                <Button variant="outline" onClick={() => navigate("/auditoria")}>
+                  <FileText className="mr-2 h-4 w-4" />
+                  Auditoria
+                </Button>
+              )}
               <Button onClick={() => navigate("/nova-troca")}>
                 <Plus className="mr-2 h-4 w-4" />
                 Nova Solicitação
@@ -68,7 +79,8 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 space-y-6">
+        <OnlineUsers userId={user.id} />
         <ExchangeList isAdmin={isAdmin} userId={user.id} />
       </main>
     </div>
