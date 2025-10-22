@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useAccessTracking } from "@/hooks/useAccessTracking";
 import { Button } from "@/components/ui/button";
 import { ExchangeList } from "@/components/dashboard/ExchangeList";
 import { OnlineUsers } from "@/components/dashboard/OnlineUsers";
@@ -10,6 +11,9 @@ import { Badge } from "@/components/ui/badge";
 const Dashboard = () => {
   const { user, loading, isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
+
+  // Track user access
+  useAccessTracking(user?.id);
 
   useEffect(() => {
     if (!loading && !user) {

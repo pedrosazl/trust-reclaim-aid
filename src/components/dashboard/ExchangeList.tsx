@@ -7,6 +7,15 @@ import { toast } from "sonner";
 import { CheckCircle, XCircle, Clock, ExternalLink } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
+interface ExchangeProduct {
+  id: string;
+  quantity: number;
+  products: {
+    name: string;
+    unit: string;
+  };
+}
+
 interface Exchange {
   id: string;
   cnpj: string;
@@ -20,6 +29,7 @@ interface Exchange {
     full_name: string | null;
     email: string | null;
   } | null;
+  exchange_products?: ExchangeProduct[];
 }
 
 export const ExchangeList = ({ isAdmin, userId }: { isAdmin: boolean; userId: string }) => {
@@ -55,7 +65,14 @@ export const ExchangeList = ({ isAdmin, userId }: { isAdmin: boolean; userId: st
     setLoading(true);
     let query = supabase
       .from("exchanges")
-      .select("*")
+      .select(`
+        *,
+        exchange_products(
+          id,
+          quantity,
+          products(name, unit)
+        )
+      `)
       .order("created_at", { ascending: false });
 
     if (!isAdmin) {
@@ -283,6 +300,20 @@ export const ExchangeList = ({ isAdmin, userId }: { isAdmin: boolean; userId: st
                   <p className="text-sm font-medium mb-1">Motivo:</p>
                   <p className="text-sm text-muted-foreground">{exchange.reason}</p>
                 </div>
+
+                {exchange.exchange_products && exchange.exchange_products.length > 0 && (
+                  <div>
+                    <p className="text-sm font-medium mb-2">Produtos:</p>
+                    <div className="space-y-1">
+                      {exchange.exchange_products.map((ep: ExchangeProduct) => (
+                        <div key={ep.id} className="text-sm text-muted-foreground flex justify-between">
+                          <span>{ep.products.name}</span>
+                          <span className="font-medium">{ep.quantity} {ep.products.unit}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {(exchange.signature_url || exchange.image_url) && (
                   <div className="flex gap-2">
