@@ -37,6 +37,21 @@ export const ExchangeList = ({ isAdmin, userId }: { isAdmin: boolean; userId: st
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "pending" | "approved" | "rejected">("all");
 
+  const openFileUrl = async (filePath: string) => {
+    const { data, error } = await supabase.storage
+      .from("exchange-files")
+      .createSignedUrl(filePath, 600); // 10 minute expiry
+
+    if (error) {
+      toast.error("Erro ao carregar arquivo");
+      return;
+    }
+
+    if (data?.signedUrl) {
+      window.open(data.signedUrl, "_blank");
+    }
+  };
+
   useEffect(() => {
     fetchExchanges();
     
@@ -321,7 +336,7 @@ export const ExchangeList = ({ isAdmin, userId }: { isAdmin: boolean; userId: st
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => window.open(exchange.signature_url!, "_blank")}
+                        onClick={() => openFileUrl(exchange.signature_url!)}
                       >
                         <ExternalLink className="mr-2 h-4 w-4" />
                         Ver Assinatura
@@ -331,7 +346,7 @@ export const ExchangeList = ({ isAdmin, userId }: { isAdmin: boolean; userId: st
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => window.open(exchange.image_url!, "_blank")}
+                        onClick={() => openFileUrl(exchange.image_url!)}
                       >
                         <ExternalLink className="mr-2 h-4 w-4" />
                         Ver Imagem

@@ -92,11 +92,8 @@ export const ExchangeForm = ({ userId }: { userId: string }) => {
       return null;
     }
 
-    const { data } = supabase.storage
-      .from("exchange-files")
-      .getPublicUrl(fileName);
-
-    return data.publicUrl;
+    // Return the file path - signed URLs will be generated when viewing
+    return fileName;
   };
 
   const saveToLocalStorage = () => {
