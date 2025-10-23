@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ExchangeList } from "@/components/dashboard/ExchangeList";
 import { OnlineUsers } from "@/components/dashboard/OnlineUsers";
 import { AnalyticsSection } from "@/components/analytics/AnalyticsSection";
+import { InventoryDashboard } from "@/components/inventory/InventoryDashboard";
 import { LogOut, Plus, Shield, User, Package, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -87,6 +88,7 @@ const Dashboard = () => {
       <main className="container mx-auto px-4 py-8 space-y-6">
         <OnlineUsers userId={user.id} />
         <AnalyticsSection isAdmin={isAdmin} userId={user.id} />
+        <InventoryDashboard isAdmin={isAdmin} userId={user.id} />
         <ExchangeList isAdmin={isAdmin} userId={user.id} />
       </main>
     </div>

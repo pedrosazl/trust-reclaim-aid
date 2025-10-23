@@ -61,27 +61,49 @@ export type Database = {
       }
       exchange_products: {
         Row: {
+          analyzed_at: string | null
+          analyzed_by: string | null
           created_at: string
           exchange_id: string
           id: string
+          product_condition: string | null
           product_id: string
+          product_status: string | null
           quantity: number
+          unit_price: number | null
         }
         Insert: {
+          analyzed_at?: string | null
+          analyzed_by?: string | null
           created_at?: string
           exchange_id: string
           id?: string
+          product_condition?: string | null
           product_id: string
+          product_status?: string | null
           quantity: number
+          unit_price?: number | null
         }
         Update: {
+          analyzed_at?: string | null
+          analyzed_by?: string | null
           created_at?: string
           exchange_id?: string
           id?: string
+          product_condition?: string | null
           product_id?: string
+          product_status?: string | null
           quantity?: number
+          unit_price?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "exchange_products_exchange_id_fkey"
+            columns: ["exchange_id"]
+            isOneToOne: false
+            referencedRelation: "exchange_financial_summary"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "exchange_products_exchange_id_fkey"
             columns: ["exchange_id"]
@@ -106,10 +128,13 @@ export type Database = {
           created_at: string
           id: string
           image_url: string | null
+          processing_fee: number | null
           reason: string
+          shipping_cost: number | null
           signature_url: string | null
           status: Database["public"]["Enums"]["exchange_status"]
           synced: boolean
+          total_loss: number | null
           updated_at: string
           user_id: string
         }
@@ -120,10 +145,13 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
+          processing_fee?: number | null
           reason: string
+          shipping_cost?: number | null
           signature_url?: string | null
           status?: Database["public"]["Enums"]["exchange_status"]
           synced?: boolean
+          total_loss?: number | null
           updated_at?: string
           user_id: string
         }
@@ -134,10 +162,13 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
+          processing_fee?: number | null
           reason?: string
+          shipping_cost?: number | null
           signature_url?: string | null
           status?: Database["public"]["Enums"]["exchange_status"]
           synced?: boolean
+          total_loss?: number | null
           updated_at?: string
           user_id?: string
         }
@@ -145,34 +176,46 @@ export type Database = {
       }
       products: {
         Row: {
+          category: string | null
+          cost_price: number | null
           created_at: string
           created_by: string | null
           description: string | null
           id: string
           name: string
           quantity: number
+          selling_price: number | null
+          sku: string | null
           unit: Database["public"]["Enums"]["product_unit"]
           updated_at: string
           updated_by: string | null
         }
         Insert: {
+          category?: string | null
+          cost_price?: number | null
           created_at?: string
           created_by?: string | null
           description?: string | null
           id?: string
           name: string
           quantity?: number
+          selling_price?: number | null
+          sku?: string | null
           unit?: Database["public"]["Enums"]["product_unit"]
           updated_at?: string
           updated_by?: string | null
         }
         Update: {
+          category?: string | null
+          cost_price?: number | null
           created_at?: string
           created_by?: string | null
           description?: string | null
           id?: string
           name?: string
           quantity?: number
+          selling_price?: number | null
+          sku?: string | null
           unit?: Database["public"]["Enums"]["product_unit"]
           updated_at?: string
           updated_by?: string | null
@@ -259,9 +302,26 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      exchange_financial_summary: {
+        Row: {
+          created_at: string | null
+          id: string | null
+          processing_fee: number | null
+          product_value_loss: number | null
+          shipping_cost: number | null
+          status: Database["public"]["Enums"]["exchange_status"] | null
+          total_financial_loss: number | null
+          total_loss: number | null
+          user_email: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      calculate_exchange_product_loss: {
+        Args: { exchange_id_param: string }
+        Returns: number
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
