@@ -1,0 +1,4 @@
+[
+  {"cnpj": "12345678000199", "nome": "Empresa Alpha", "endereco": "Rua A, 100", "telefone": "1111-1111"},
+  {"cnpj": "98765432000188", "nome": "Empresa Beta", "endereco": "Rua B, 200", "telefone": "2222-2222"}
+]
