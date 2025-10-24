@@ -7,6 +7,7 @@ import { ExchangeList } from "@/components/dashboard/ExchangeList";
 import { OnlineUsers } from "@/components/dashboard/OnlineUsers";
 import { AnalyticsSection } from "@/components/analytics/AnalyticsSection";
 import { InventoryDashboard } from "@/components/inventory/InventoryDashboard";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { LogOut, Plus, Shield, User, Package, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -61,7 +62,8 @@ const Dashboard = () => {
                 )}
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
+              <NotificationBell userId={user.id} />
               <Button onClick={() => navigate("/produtos")}>
                 <Package className="mr-2 h-4 w-4" />
                 Produtos
