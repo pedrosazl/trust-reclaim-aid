@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, FileText, CheckCircle } from "lucide-react";
+import valeDoLeiteLogo from "@/assets/valedoleite_logo.png";
 
 const Index = () => {
   const { user, loading } = useAuth();
@@ -26,16 +27,23 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-primary/10">
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          <div className="space-y-4">
-            <h1 className="text-4xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Sistema de Trocas e Devoluções
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Gerencie solicitações de trocas e devoluções de forma eficiente e profissional
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/20">
+      <div className="container mx-auto px-4 py-8 md:py-16">
+        <div className="max-w-5xl mx-auto space-y-8">
+          <div className="flex flex-col items-center space-y-6">
+            <img 
+              src={valeDoLeiteLogo} 
+              alt="Vale do Leite" 
+              className="w-48 h-48 md:w-64 md:h-64 object-contain"
+            />
+            <div className="text-center space-y-4">
+              <h1 className="text-3xl md:text-5xl font-bold text-primary">
+                SISTEMA VALE DO LEITE
+              </h1>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
+                Gerencie solicitações de trocas e devoluções de forma eficiente e profissional
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">

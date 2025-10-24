@@ -17,10 +17,10 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico"],
       manifest: {
-        name: "Sistema de Trocas e Devoluções",
-        short_name: "Trocas",
+        name: "Sistema Vale do Leite",
+        short_name: "Vale do Leite",
         description: "Sistema profissional para gerenciar trocas e devoluções",
-        theme_color: "#0EA5E9",
+        theme_color: "#52A66A",
         background_color: "#ffffff",
         display: "standalone",
         orientation: "portrait",
