@@ -1,32 +1,55 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Sistema de Trocas e Devoluções</title>
-    <meta name="description" content="Sistema profissional para gerenciar trocas e devoluções com aprovação administrativa e modo offline" />
-    <meta name="author" content="Sistema de Gestão" />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SISTEMA_VDL — Início</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <h1 class="logo">SISTEMA_VDL</h1>
+      <div class="top-actions">
+        <button id="open-panel" class="btn primary">Acessar Painel</button>
+      </div>
+    </header>
 
-    <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#0EA5E9" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Trocas" />
-    <link rel="apple-touch-icon" href="/icon-192.png" />
-    <link rel="manifest" href="/manifest.webmanifest" />
+    <main class="container">
+      <section class="hero card">
+        <h2>Bem-vindo ao SISTEMA_VDL</h2>
+        <p>Painel moderno para gestão de trocas, devoluções e avarias.</p>
+        <div class="quick-cards">
+          <div class="qc">
+            <strong>Trocas</strong>
+            <span>Registrar e acompanhar</span>
+          </div>
+          <div class="qc">
+            <strong>Devoluções</strong>
+            <span>Analisar e resolver</span>
+          </div>
+          <div class="qc">
+            <strong>Avarias</strong>
+            <span>Registro com foto</span>
+          </div>
+          <div class="qc">
+            <strong>Relatórios</strong>
+            <span>Exportar CSV / PDF</span>
+          </div>
+        </div>
+      </section>
 
-    <meta property="og:title" content="Sistema de Trocas e Devoluções" />
-    <meta property="og:description" content="Sistema profissional para gerenciar trocas e devoluções com aprovação administrativa e modo offline" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+      <section class="catalog card">
+        <h3>Catálogo (pré-visualização)</h3>
+        <div class="products" id="products-list">
+          <!-- Product cards are injected by script.js -->
+        </div>
+      </section>
+    </main>
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  </head>
+    <footer class="footer">© SISTEMA_VDL</footer>
+  </div>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+  <script src="script.js"></script>
+</body>
 </html>

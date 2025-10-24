@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SISTEMA_VDL — Painel</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-header">SISTEMA_VDL</div>
+      <nav>
+        <a href="index.html">Início</a>
+        <a class="active" href="painel.html">Painel</a>
+        <a href="#">Produtos</a>
+        <a href="#">Usuários</a>
+        <a href="#">Relatórios</a>
+      </nav>
+    </aside>
+
+    <main class="main-area">
+      <header class="panel-top">
+        <h2>Painel de Trocas e Devoluções</h2>
+        <div class="filters">
+          <input id="filter-search" placeholder="Buscar produto ou usuário..." />
+          <select id="period-filter">
+            <option value="7">Últimos 7 dias</option>
+            <option value="30" selected>Últimos 30 dias</option>
+            <option value="90">Últimos 90 dias</option>
+          </select>
+        </div>
+      </header>
+
+      <section class="cards-row">
+        <div class="stat card" id="card-pendentes">
+          <div class="stat-title">Pendentes</div>
+          <div class="stat-value" id="count-pending">0</div>
+        </div>
+        <div class="stat card" id="card-aprovadas">
+          <div class="stat-title">Aprovadas</div>
+          <div class="stat-value" id="count-approved">0</div>
+        </div>
+        <div class="stat card" id="card-rejeitadas">
+          <div class="stat-title">Rejeitadas</div>
+          <div class="stat-value" id="count-rejected">0</div>
+        </div>
+        <div class="stat card" id="card-alerts">
+          <div class="stat-title">Alertas estoque</div>
+          <div class="stat-value" id="count-alerts">0</div>
+        </div>
+      </section>
+
+      <section class="charts card">
+        <div class="chart-col">
+          <h4>Devoluções por dia</h4>
+          <canvas id="line-chart" height="120"></canvas>
+        </div>
+        <div class="chart-col">
+          <h4>Motivos (%)</h4>
+          <canvas id="pie-chart" height="120"></canvas>
+        </div>
+      </section>
+
+      <section class="table card">
+        <h3>Solicitações recentes</h3>
+        <table id="requests-table">
+          <thead>
+            <tr><th>ID</th><th>Usuário</th><th>Produto</th><th>Motivo</th><th>Status</th><th>Ação</th></tr>
+          </thead>
+          <tbody>
+            <!-- Rows injected by script.js -->
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
