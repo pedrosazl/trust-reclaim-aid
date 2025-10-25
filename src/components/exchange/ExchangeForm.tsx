@@ -7,10 +7,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Loader2, Upload, Camera, Plus, Trash2 } from "lucide-react";
+import { Loader2, Upload, Camera, Plus, Trash2, Search } from "lucide-react";
 import { z } from "zod";
 import { useNavigate } from "react-router-dom";
 import type { Database } from "@/integrations/supabase/types";
+import { searchCNPJ } from "@/services/cnpjService";
 
 type Product = Database["public"]["Tables"]["products"]["Row"];
 
@@ -21,6 +22,9 @@ const cnpjSchema = z.string().regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/, {
 export const ExchangeForm = ({ userId }: { userId: string }) => {
   const [loading, setLoading] = useState(false);
   const [cnpj, setCnpj] = useState("");
+  const [cnpjSearching, setCnpjSearching] = useState(false);
+  const [companyName, setCompanyName] = useState("");
+  const [companyAddress, setCompanyAddress] = useState("");
   const [reason, setReason] = useState("");
   const [signatureFile, setSignatureFile] = useState<File | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -74,9 +78,33 @@ export const ExchangeForm = ({ userId }: { userId: string }) => {
     return value;
   };
 
-  const handleCNPJChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCNPJChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const formatted = formatCNPJ(e.target.value);
     setCnpj(formatted);
+
+    // Limpa os dados da empresa quando o CNPJ é alterado
+    setCompanyName("");
+    setCompanyAddress("");
+
+    // Se o CNPJ está completo (14 dígitos), busca automaticamente
+    const cleaned = formatted.replace(/\D/g, "");
+    if (cleaned.length === 14) {
+      setCnpjSearching(true);
+      try {
+        const data = await searchCNPJ(formatted);
+        if (data) {
+          setCompanyName(data.nome);
+          setCompanyAddress(data.endereco);
+          toast.success(`Empresa encontrada: ${data.nome}`);
+        } else {
+          toast.warning("CNPJ não encontrado na base de dados");
+        }
+      } catch (error) {
+        toast.error("Erro ao buscar CNPJ");
+      } finally {
+        setCnpjSearching(false);
+      }
+    }
   };
 
   const uploadFile = async (file: File, folder: string): Promise<string | null> => {
@@ -233,16 +261,36 @@ export const ExchangeForm = ({ userId }: { userId: string }) => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="cnpj">CNPJ *</Label>
-            <Input
-              id="cnpj"
-              placeholder="00.000.000/0000-00"
-              value={cnpj}
-              onChange={handleCNPJChange}
-              maxLength={18}
-              required
-              disabled={loading}
-            />
+            <div className="relative">
+              <Input
+                id="cnpj"
+                placeholder="00.000.000/0000-00"
+                value={cnpj}
+                onChange={handleCNPJChange}
+                maxLength={18}
+                required
+                disabled={loading}
+                className="pr-10"
+              />
+              {cnpjSearching && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                </div>
+              )}
+            </div>
           </div>
+
+          {companyName && (
+            <div className="space-y-2 p-4 bg-success/10 border border-success/20 rounded-lg">
+              <div className="flex items-start gap-2">
+                <Search className="h-5 w-5 text-success mt-0.5" />
+                <div className="flex-1">
+                  <p className="font-medium text-success">{companyName}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{companyAddress}</p>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="reason">Motivo da Troca/Devolução *</Label>
