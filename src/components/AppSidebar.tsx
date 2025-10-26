@@ -1,87 +1,70 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { toast } from "sonner";
-import { Volume2, VolumeX } from "lucide-react";
+import { NavLink, useLocation } from "react-router-dom";
+import { FileText, BarChart3, Package, Users, LayoutDashboard, ScrollText, Settings } from "lucide-react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/components/ui/sidebar";
 
-export default function Settings() {
-  const [approvedSound, setApprovedSound] = useState(true);
-  const [rejectedSound, setRejectedSound] = useState(true);
+const menuItems = [
+  { title: "Nova Solicitação", url: "/", icon: FileText },
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Relatórios", url: "/relatorios", icon: BarChart3 },
+  { title: "Produtos", url: "/produtos", icon: Package },
+  { title: "Auditoria", url: "/auditoria", icon: ScrollText },
+  { title: "Configurações", url: "/configuracoes", icon: Settings },
+];
 
-  useEffect(() => {
-    const savedApproved = localStorage.getItem("notification_approved_sound");
-    const savedRejected = localStorage.getItem("notification_rejected_sound");
-    
-    if (savedApproved !== null) setApprovedSound(savedApproved === "true");
-    if (savedRejected !== null) setRejectedSound(savedRejected === "true");
-  }, []);
+export function AppSidebar() {
+  const { state, setOpen } = useSidebar();
+  const location = useLocation();
 
-  const handleApprovedChange = (checked: boolean) => {
-    setApprovedSound(checked);
-    localStorage.setItem("notification_approved_sound", String(checked));
-    toast.success(checked ? "Som de aprovação ativado" : "Som de aprovação desativado");
-  };
+  const isActive = (path: string) => location.pathname === path;
 
-  const handleRejectedChange = (checked: boolean) => {
-    setRejectedSound(checked);
-    localStorage.setItem("notification_rejected_sound", String(checked));
-    toast.success(checked ? "Som de rejeição ativado" : "Som de rejeição desativado");
+  const handleNavClick = () => {
+    // Fecha o sidebar em dispositivos móveis após clicar
+    if (window.innerWidth < 768) {
+      setOpen(false);
+    }
   };
 
   return (
-    <div className="container mx-auto p-4 md:p-6 space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Configurações</h1>
-        <p className="text-muted-foreground">
-          Configure as preferências do aplicativo
-        </p>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Volume2 className="h-5 w-5" />
-            Notificações Sonoras
-          </CardTitle>
-          <CardDescription>
-            Configure os sons de notificação para aprovações e rejeições
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <Label htmlFor="approved-sound" className="text-base font-medium">
-                Som de Aprovação
-              </Label>
-              <p className="text-sm text-muted-foreground">
-                Reproduzir som quando uma solicitação for aprovada
-              </p>
-            </div>
-            <Switch
-              id="approved-sound"
-              checked={approvedSound}
-              onCheckedChange={handleApprovedChange}
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <Label htmlFor="rejected-sound" className="text-base font-medium">
-                Som de Rejeição
-              </Label>
-              <p className="text-sm text-muted-foreground">
-                Reproduzir som quando uma solicitação for rejeitada
-              </p>
-            </div>
-            <Switch
-              id="rejected-sound"
-              checked={rejectedSound}
-              onCheckedChange={handleRejectedChange}
-            />
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    <Sidebar className={state === "collapsed" ? "w-14" : "w-60"}>
+      <SidebarContent className="bg-sidebar text-sidebar-foreground">
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-black font-bold text-base">
+            Menu Principal
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {menuItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink
+                      to={item.url}
+                      onClick={handleNavClick}
+                      className={({ isActive }) =>
+                        isActive
+                          ? "bg-sidebar-primary text-sidebar-primary-foreground font-semibold"
+                          : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                      }
+                    >
+                      <item.icon className="h-5 w-5" />
+                      {state !== "collapsed" && <span className="text-base">{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
 }
