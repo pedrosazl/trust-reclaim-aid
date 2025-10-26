@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, FileText, LogOut, Plus } from "lucide-react";
+import { LayoutDashboard, Package, FileText, LogOut, Plus, Download, Home } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -27,6 +27,11 @@ export function AppSidebar({ isAdmin, onSignOut }: AppSidebarProps) {
   const collapsed = state === "collapsed";
 
   const mainItems = [
+    { 
+      title: "Início", 
+      url: "/", 
+      icon: Home 
+    },
     ...(isAdmin ? [{ 
       title: "Painel Geral", 
       url: "/dashboard", 
@@ -42,11 +47,18 @@ export function AppSidebar({ isAdmin, onSignOut }: AppSidebarProps) {
       url: "/produtos", 
       icon: Package 
     },
-    ...(isAdmin ? [{ 
-      title: "Auditoria", 
-      url: "/auditoria", 
-      icon: FileText 
-    }] : []),
+    ...(isAdmin ? [
+      { 
+        title: "Relatórios", 
+        url: "/relatorios", 
+        icon: Download 
+      },
+      { 
+        title: "Auditoria", 
+        url: "/auditoria", 
+        icon: FileText 
+      }
+    ] : []),
   ];
 
   return (

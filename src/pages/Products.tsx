@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
 import { ProductList } from "@/components/products/ProductList";
-import { ArrowLeft } from "lucide-react";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 
 const Products = () => {
-  const { user, loading, isAdmin } = useAuth();
+  const { user, loading, isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,6 +14,11 @@ const Products = () => {
       navigate("/auth");
     }
   }, [user, loading, navigate]);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/auth");
+  };
 
   if (loading) {
     return (
@@ -31,25 +36,24 @@ const Products = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-primary/10">
-      <header className="bg-card border-b shadow-card">
-        <div className="container mx-auto px-4 py-4">
-          <Button
-            variant="ghost"
-            onClick={() => navigate("/dashboard")}
-            className="mb-2"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar ao Dashboard
-          </Button>
-          <h1 className="text-2xl font-bold">Gerenciar Produtos</h1>
-        </div>
-      </header>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-gradient-to-br from-primary/5 via-background to-primary/10">
+        <AppSidebar isAdmin={isAdmin} onSignOut={handleSignOut} />
+        
+        <div className="flex-1 flex flex-col">
+          <header className="h-16 border-b bg-card shadow-card flex items-center px-4">
+            <SidebarTrigger className="mr-4" />
+            <h1 className="text-xl font-bold">Gerenciar Produtos</h1>
+          </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <ProductList userId={user.id} isAdmin={isAdmin} />
-      </main>
-    </div>
+          <main className="flex-1 overflow-auto">
+            <div className="container mx-auto px-4 py-8">
+              <ProductList userId={user.id} isAdmin={isAdmin} />
+            </div>
+          </main>
+        </div>
+      </div>
+    </SidebarProvider>
   );
 };
 

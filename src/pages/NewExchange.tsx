@@ -36,11 +36,11 @@ const NewExchange = () => {
         <div className="container mx-auto px-4 py-4">
           <Button
             variant="ghost"
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/")}
             className="mb-2"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar ao Dashboard
+            Voltar ao Início
           </Button>
           <h1 className="text-2xl font-bold">Nova Solicitação de Troca/Devolução</h1>
         </div>

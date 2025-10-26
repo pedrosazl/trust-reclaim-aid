@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Shield, FileText, CheckCircle } from "lucide-react";
+import { Plus, User } from "lucide-react";
 import valeDoLeiteLogo from "@/assets/valedoleite_logo.png";
 
 const Index = () => {
@@ -10,14 +10,14 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && user) {
-      navigate("/dashboard");
+    if (!loading && !user) {
+      navigate("/auth");
     }
   }, [user, loading, navigate]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-primary/10">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
           <p className="mt-4 text-muted-foreground">Carregando...</p>
@@ -26,67 +26,46 @@ const Index = () => {
     );
   }
 
+  if (!user) {
+    return null;
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/20">
-      <div className="container mx-auto px-4 py-8 md:py-16">
-        <div className="max-w-5xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-primary/10">
+      {/* Header com nome do usuário */}
+      <header className="bg-card border-b shadow-card">
+        <div className="container mx-auto px-4 py-4 flex justify-end items-center">
+          <div className="flex items-center gap-2">
+            <User className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-medium">{user.email}</span>
+          </div>
+        </div>
+      </header>
+
+      <div className="container mx-auto px-4 py-16">
+        <div className="max-w-2xl mx-auto space-y-12">
+          {/* Logo centralizada */}
           <div className="flex flex-col items-center space-y-6">
             <img 
               src={valeDoLeiteLogo} 
               alt="Vale do Leite" 
-              className="w-48 h-48 md:w-64 md:h-64 object-contain"
+              className="w-64 h-64 md:w-80 md:h-80 object-contain drop-shadow-lg"
             />
-            <div className="text-center space-y-4">
-              <h1 className="text-3xl md:text-5xl font-bold text-primary">
-                SISTEMA VALE DO LEITE
-              </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
-                Gerencie solicitações de trocas e devoluções de forma eficiente e profissional
-              </p>
-            </div>
+            <h1 className="text-2xl md:text-3xl font-bold text-center text-foreground">
+              SISTEMA VALE DO LEITE
+            </h1>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-            <div className="bg-card p-6 rounded-lg shadow-card border">
-              <FileText className="h-12 w-12 text-primary mx-auto mb-4" />
-              <h3 className="font-semibold text-lg mb-2">Solicitações Simples</h3>
-              <p className="text-sm text-muted-foreground">
-                Preencha o formulário com CNPJ, motivo e documentação necessária
-              </p>
-            </div>
-
-            <div className="bg-card p-6 rounded-lg shadow-card border">
-              <Shield className="h-12 w-12 text-primary mx-auto mb-4" />
-              <h3 className="font-semibold text-lg mb-2">Aprovação Segura</h3>
-              <p className="text-sm text-muted-foreground">
-                Sistema de aprovação com controle de acesso administrativo
-              </p>
-            </div>
-
-            <div className="bg-card p-6 rounded-lg shadow-card border">
-              <CheckCircle className="h-12 w-12 text-primary mx-auto mb-4" />
-              <h3 className="font-semibold text-lg mb-2">Modo Offline</h3>
-              <p className="text-sm text-muted-foreground">
-                Trabalhe sem conexão e sincronize automaticamente quando online
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
+          {/* Botão Nova Solicitação */}
+          <div className="flex justify-center">
             <Button
               size="lg"
-              onClick={() => navigate("/auth")}
-              className="text-lg px-8 shadow-elevated hover:shadow-elevated"
+              onClick={() => navigate("/nova-troca")}
+              className="text-lg px-12 py-6 h-auto shadow-elevated hover:shadow-elevated transition-all"
             >
-              Acessar Sistema
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <Plus className="mr-2 h-6 w-6" />
+              Nova Solicitação
             </Button>
-          </div>
-
-          <div className="mt-16 p-6 bg-card rounded-lg shadow-card border">
-            <p className="text-sm text-muted-foreground">
-              <strong>Primeiro acesso?</strong> O primeiro usuário cadastrado automaticamente se torna administrador.
-            </p>
           </div>
         </div>
       </div>
