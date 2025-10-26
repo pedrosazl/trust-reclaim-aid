@@ -1,87 +1,110 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { toast } from "sonner";
-import { Volume2, VolumeX } from "lucide-react";
+import { LayoutDashboard, Package, FileText, LogOut, Plus, Download, Home } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/ui/sidebar";
 
-export default function Settings() {
-  const [approvedSound, setApprovedSound] = useState(true);
-  const [rejectedSound, setRejectedSound] = useState(true);
+interface AppSidebarProps {
+  isAdmin: boolean;
+  onSignOut: () => void;
+}
 
-  useEffect(() => {
-    const savedApproved = localStorage.getItem("notification_approved_sound");
-    const savedRejected = localStorage.getItem("notification_rejected_sound");
-    
-    if (savedApproved !== null) setApprovedSound(savedApproved === "true");
-    if (savedRejected !== null) setRejectedSound(savedRejected === "true");
-  }, []);
+export function AppSidebar({ isAdmin, onSignOut }: AppSidebarProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { state } = useSidebar();
 
-  const handleApprovedChange = (checked: boolean) => {
-    setApprovedSound(checked);
-    localStorage.setItem("notification_approved_sound", String(checked));
-    toast.success(checked ? "Som de aprovação ativado" : "Som de aprovação desativado");
-  };
+  const isActive = (path: string) => location.pathname === path;
+  const collapsed = state === "collapsed";
 
-  const handleRejectedChange = (checked: boolean) => {
-    setRejectedSound(checked);
-    localStorage.setItem("notification_rejected_sound", String(checked));
-    toast.success(checked ? "Som de rejeição ativado" : "Som de rejeição desativado");
-  };
+  const mainItems = [
+    { 
+      title: "Início", 
+      url: "/", 
+      icon: Home 
+    },
+    ...(isAdmin ? [{ 
+      title: "Painel Geral", 
+      url: "/dashboard", 
+      icon: LayoutDashboard 
+    }] : []),
+    { 
+      title: "Nova Solicitação", 
+      url: "/nova-troca", 
+      icon: Plus 
+    },
+    { 
+      title: "Produtos", 
+      url: "/produtos", 
+      icon: Package 
+    },
+    ...(isAdmin ? [
+      { 
+        title: "Relatórios", 
+        url: "/relatorios", 
+        icon: Download 
+      },
+      { 
+        title: "Auditoria", 
+        url: "/auditoria", 
+        icon: FileText 
+      }
+    ] : []),
+  ];
 
   return (
-    <div className="container mx-auto p-4 md:p-6 space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Configurações</h1>
-        <p className="text-muted-foreground">
-          Configure as preferências do aplicativo
-        </p>
+    <Sidebar
+      collapsible="icon"
+    >
+      <div className="p-4 border-b">
+        <SidebarTrigger className="mb-2" />
+        {!collapsed && (
+          <h2 className="text-lg font-semibold">Sistema VDL</h2>
+        )}
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Volume2 className="h-5 w-5" />
-            Notificações Sonoras
-          </CardTitle>
-          <CardDescription>
-            Configure os sons de notificação para aprovações e rejeições
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <Label htmlFor="approved-sound" className="text-base font-medium">
-                Som de Aprovação
-              </Label>
-              <p className="text-sm text-muted-foreground">
-                Reproduzir som quando uma solicitação for aprovada
-              </p>
-            </div>
-            <Switch
-              id="approved-sound"
-              checked={approvedSound}
-              onCheckedChange={handleApprovedChange}
-            />
-          </div>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Menu Principal</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {mainItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    onClick={() => navigate(item.url)}
+                    className={isActive(item.url) ? "bg-primary/10 text-primary font-medium" : ""}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {!collapsed && <span>{item.title}</span>}
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <Label htmlFor="rejected-sound" className="text-base font-medium">
-                Som de Rejeição
-              </Label>
-              <p className="text-sm text-muted-foreground">
-                Reproduzir som quando uma solicitação for rejeitada
-              </p>
-            </div>
-            <Switch
-              id="rejected-sound"
-              checked={rejectedSound}
-              onCheckedChange={handleRejectedChange}
-            />
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        <SidebarGroup className="mt-auto">
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={onSignOut}>
+                  <LogOut className="h-4 w-4" />
+                  {!collapsed && <span>Sair</span>}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
 }
