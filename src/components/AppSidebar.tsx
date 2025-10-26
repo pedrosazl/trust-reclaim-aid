@@ -1,5 +1,5 @@
-import { NavLink, useLocation } from "react-router-dom";
-import { FileText, BarChart3, Package, Users, LayoutDashboard, ScrollText, Settings } from "lucide-react";
+import { LayoutDashboard, Package, FileText, LogOut, Plus, Download, Home } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -7,60 +7,100 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const menuItems = [
-  { title: "Nova Solicitação", url: "/", icon: FileText },
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Relatórios", url: "/relatorios", icon: BarChart3 },
-  { title: "Produtos", url: "/produtos", icon: Package },
-  { title: "Auditoria", url: "/auditoria", icon: ScrollText },
-  { title: "Configurações", url: "/configuracoes", icon: Settings },
-];
+interface AppSidebarProps {
+  isAdmin: boolean;
+  onSignOut: () => void;
+}
 
-export function AppSidebar() {
-  const { state, setOpen } = useSidebar();
+export function AppSidebar({ isAdmin, onSignOut }: AppSidebarProps) {
+  const navigate = useNavigate();
   const location = useLocation();
+  const { state } = useSidebar();
 
   const isActive = (path: string) => location.pathname === path;
+  const collapsed = state === "collapsed";
 
-  const handleNavClick = () => {
-    // Fecha o sidebar em dispositivos móveis após clicar
-    if (window.innerWidth < 768) {
-      setOpen(false);
-    }
-  };
+  const mainItems = [
+    { 
+      title: "Início", 
+      url: "/", 
+      icon: Home 
+    },
+    ...(isAdmin ? [{ 
+      title: "Painel Geral", 
+      url: "/dashboard", 
+      icon: LayoutDashboard 
+    }] : []),
+    { 
+      title: "Nova Solicitação", 
+      url: "/nova-troca", 
+      icon: Plus 
+    },
+    { 
+      title: "Produtos", 
+      url: "/produtos", 
+      icon: Package 
+    },
+    ...(isAdmin ? [
+      { 
+        title: "Relatórios", 
+        url: "/relatorios", 
+        icon: Download 
+      },
+      { 
+        title: "Auditoria", 
+        url: "/auditoria", 
+        icon: FileText 
+      }
+    ] : []),
+  ];
 
   return (
-    <Sidebar className={state === "collapsed" ? "w-14" : "w-60"}>
-      <SidebarContent className="bg-sidebar text-sidebar-foreground">
+    <Sidebar
+      collapsible="icon"
+    >
+      <div className="p-4 border-b">
+        <SidebarTrigger className="mb-2" />
+        {!collapsed && (
+          <h2 className="text-lg font-semibold">Sistema VDL</h2>
+        )}
+      </div>
+
+      <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-black font-bold text-base">
-            Menu Principal
-          </SidebarGroupLabel>
+          <SidebarGroupLabel>Menu Principal</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
+              {mainItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      onClick={handleNavClick}
-                      className={({ isActive }) =>
-                        isActive
-                          ? "bg-sidebar-primary text-sidebar-primary-foreground font-semibold"
-                          : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                      }
-                    >
-                      <item.icon className="h-5 w-5" />
-                      {state !== "collapsed" && <span className="text-base">{item.title}</span>}
-                    </NavLink>
+                  <SidebarMenuButton
+                    onClick={() => navigate(item.url)}
+                    className={isActive(item.url) ? "bg-primary/10 text-primary font-medium" : ""}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {!collapsed && <span>{item.title}</span>}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup className="mt-auto">
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={onSignOut}>
+                  <LogOut className="h-4 w-4" />
+                  {!collapsed && <span>Sair</span>}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
